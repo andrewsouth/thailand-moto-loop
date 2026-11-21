@@ -1,0 +1,156 @@
+<meta charset="utf-8">
+<title>Ride Northern Thailand</title>
+<style>
+/* Layout: follows the original two-page brochure. A photo cover, the route at a glance (facts and a real relief map), the itinerary, the eleven numbered stops, and a closing photo banner. */
+:root{
+  --paper:#f5f6f3; --ink:#18263a; --fg:#1F1F1F; --muted:#59606a; --rule:#d9dcd6;
+  --gold:#a5803c; --road:#9b3b2e; --card:#ffffff; --band:#18263a; --bandfg:#f2f1ec; --bandmuted:#b9c0c8;
+  --display:Georgia,"Times New Roman",serif; --body:Arial,Helvetica,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#121820; --ink:#c9d6e6; --fg:#e6e8ea; --muted:#a2aab4; --rule:#2a333e;
+  --gold:#d6b06a; --road:#e0806f; --card:#18202a; --band:#0c1219; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#121820; --ink:#c9d6e6; --fg:#e6e8ea; --muted:#a2aab4; --rule:#2a333e;
+  --gold:#d6b06a; --road:#e0806f; --card:#18202a; --band:#0c1219; color-scheme:dark}
+body{background:var(--paper);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55}
+.col{max-width:820px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);font-weight:normal;text-wrap:balance;margin:0}
+.kicker{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase}
+
+/* cover: full photo with the title set over a soft gradient */
+.cover{position:relative;color:#f4f3ee;background:#1b2430 url("{{photo:cover1}}") center 60%/cover no-repeat;min-height:min(78vh,620px);display:flex;align-items:flex-end}
+.cover::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,20,30,.05) 25%,rgba(14,20,30,.35) 55%,rgba(14,20,30,.85) 100%)}
+.cover .col{position:relative;width:100%;padding-block:120px 34px}
+.cover .kicker{color:#e3c58a}
+.cover h1{font-size:clamp(2.6rem,8vw,4.4rem);line-height:1;margin-top:10px;letter-spacing:-.01em;text-shadow:0 1px 18px rgba(0,0,0,.35)}
+.cover h1 span{display:block;font-style:italic;font-size:.52em;color:#e8d3a6;margin-top:10px;letter-spacing:0}
+.tagline{margin:18px 0 0;font-size:.9rem;letter-spacing:.06em;color:#dfe3e7}
+.tagline b{color:#e3c58a;font-weight:normal;margin:0 8px}
+.credit-on{position:absolute;right:max(12px,env(safe-area-inset-right,0px));bottom:8px;font-size:.62rem;color:rgba(255,255,255,.6)}
+
+section{padding-block:44px 6px}
+.sh{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.sh h2{font-size:1.75rem;color:var(--ink)}
+.sh .kicker{color:var(--gold);white-space:nowrap}
+.sh::after{content:"";flex:1;border-top:1px solid var(--rule);transform:translateY(-6px)}
+
+/* at a glance */
+.glance{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:4px;overflow:hidden;margin-bottom:18px}
+.glance div{background:var(--card);padding:12px 14px;display:grid;gap:2px;min-width:0}
+.glance span{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.glance b{font-family:var(--display);font-weight:normal;font-size:1.1rem;color:var(--ink)}
+.glance small{font-size:.8rem;color:var(--muted)}
+@media (max-width:600px){.glance{grid-template-columns:1fr 1fr}}
+.map{border-radius:4px;overflow:hidden;border:1px solid var(--rule);background:#e9e8e3}
+.map svg{display:block;width:100%;height:auto}
+@media (max-width:600px){.map{overflow-x:auto}.map svg{width:680px;max-width:none}}
+.mapnote{font-size:.78rem;color:var(--muted);margin-top:8px;display:flex;flex-wrap:wrap;gap:4px 18px}
+.mapnote i{display:inline-block;width:22px;vertical-align:middle;margin-right:6px;border-top:3px solid #9b3b2e}
+.mapnote i.d{border-top:2.5px dashed #a5803c}
+.phone-only{display:none}@media (max-width:600px){.phone-only{display:inline}}
+.mapnote em{font-style:normal;display:inline-grid;place-items:center;width:17px;height:17px;border-radius:50%;background:#18263a;color:#fff;font-size:.62rem;margin-right:6px;vertical-align:middle}
+
+/* itinerary */
+.it{border-top:2px solid var(--ink)}
+.it .r{display:grid;grid-template-columns:62px minmax(0,1.25fr) 92px minmax(0,1.6fr);gap:4px 16px;padding:12px 0;border-bottom:1px solid var(--rule);align-items:baseline}
+.it .hd{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:8px 0}
+.it .d{font-family:var(--display);font-style:italic;color:var(--gold);font-size:1.05rem}
+.it h3{font-size:1.05rem;color:var(--ink)}
+.it .ov{display:block;font-size:.78rem;color:var(--muted);margin-top:2px}
+.it .km{font-size:.88rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.it .km small{display:block;color:var(--muted);font-size:.76rem}
+.it p{margin:0;font-size:.9rem;color:var(--muted)}
+.n{display:inline-grid;place-items:center;width:19px;height:19px;border-radius:50%;background:var(--ink);color:var(--paper);font-family:var(--display);font-size:.68rem;margin-right:5px;vertical-align:1px}
+@media (max-width:600px){.it .hd{display:none}.it .r{grid-template-columns:52px minmax(0,1fr)}.it .km,.it p{grid-column:2}.it .km small{display:inline;margin-left:8px}}
+
+/* stops */
+.stops{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.stop{background:var(--card);border-radius:4px;overflow:hidden;display:grid;grid-template-rows:auto 1fr;position:relative}
+.stop figure{margin:0;position:relative}
+.stop img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block;max-width:100%}
+.stop .num{position:absolute;left:12px;top:12px;width:34px;height:34px;border-radius:50%;background:#18263a;color:#fff;display:grid;place-items:center;font-family:var(--display);font-size:1rem;border:2px solid rgba(255,255,255,.9)}
+.stop .tx{padding:14px 16px 18px;min-width:0}
+.stop .where{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.stop h3{font-size:1.25rem;color:var(--ink);margin:3px 0 6px}
+.stop p{margin:0;font-size:.9rem;color:var(--muted)}
+.stop.wide{grid-column:1/-1;grid-template-columns:1.35fr 1fr;grid-template-rows:none}
+.stop.wide img{aspect-ratio:auto;height:100%;min-height:280px}
+.stop.wide .tx{align-self:center;padding:20px 24px}
+.stop.wide h3{font-size:1.5rem}
+@media (max-width:600px){.stops{grid-template-columns:1fr}.stop.wide{grid-template-columns:1fr}.stop.wide img{aspect-ratio:3/2;min-height:0}}
+
+/* closing banner */
+.closing{position:relative;margin-top:48px;color:#f4f3ee;background:#1b2430 url("{{photo:cover2}}") center 55%/cover no-repeat}
+.closing::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(14,20,30,.78),rgba(14,20,30,.25))}
+.closing .col{position:relative;padding-block:70px 64px}
+.closing h2{font-size:clamp(1.8rem,5vw,2.6rem);font-style:italic}
+.closing p{margin:10px 0 0;color:#dfe3e7;max-width:46ch}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.cta a{color:#f4f3ee;text-decoration:none;border:1px solid rgba(244,243,238,.6);border-radius:99px;padding:8px 16px;font-size:.9rem}
+.cta a:hover{background:rgba(244,243,238,.15)}
+.credits{font-size:.68rem;color:var(--muted);padding-block:14px 30px;line-height:1.6}
+.credits a{color:inherit;text-decoration:underline;text-decoration-color:var(--rule)}
+</style>
+{{nav}}
+
+<header class="cover"><div class="col">
+  <p class="kicker">Mae Hong Son Loop · 8 days from Chiang Mai</p>
+  <h1>Northern Thailand<span>Adventure Motorcycle Tour</span></h1>
+  <p class="tagline">Temples<b>·</b>Caves<b>·</b>Mountain villages<b>·</b>National parks<b>·</b>Scenic roads</p>
+</div><span class="credit-on">Doi Mae U-Kho, Khun Yuam</span></header>
+
+<section><div class="col">
+  <div class="sh"><span class="kicker">The route</span><h2>At a glance</h2></div>
+  <div class="glance">
+    <div><span>Duration</span><b>8 days</b><small>6 days riding</small></div>
+    <div><span>Distance</span><b>~1,000 km</b><small>About 620 miles</small></div>
+    <div><span>Start and finish</span><b>Chiang Mai</b><small>Fly in and out of CNX</small></div>
+    <div><span>Best time</span><b>November to February</b><small>Cool, dry, clear views</small></div>
+    <div><span>Riding level</span><b>Intermediate</b><small>Paved, winding mountain roads</small></div>
+    <div><span>Highest point</span><b>2,565 m</b><small>Doi Inthanon, 8,415 ft</small></div>
+  </div>
+  <div class="map" role="img" aria-label="Relief map of the loop: Chiang Mai, Pai, Soppong, Mae Hong Son, Khun Yuam, Mae Sariang, Doi Inthanon, and back to Chiang Mai, with eleven numbered stops">
+  {{map}}
+  </div>
+  <div class="mapnote"><span class="phone-only">Swipe the map sideways to see all of it.</span><span><i></i>Main loop, counterclockwise</span><span><i class="d"></i>Side trips</span><span><em>1</em>Numbered stops, described below</span></div>
+</div></section>
+
+<section><div class="col">
+  <div class="sh"><span class="kicker">Itinerary</span><h2>Day by day</h2></div>
+  <div class="it">
+    <div class="r hd"><span>Day</span><span>Route and overnight</span><span>Riding</span><span>Highlights</span></div>
+    <div class="r"><span class="d">1</span><div><h3>Arrive in Chiang Mai</h3><span class="ov">Overnight · Chiang Mai</span></div><span class="km">Arrival</span><p><span class="n">1</span>Old City temples, Wat Chedi Luang, Night Bazaar</p></div>
+    <div class="r"><span class="d">2</span><div><h3>Doi Suthep and Samoeng</h3><span class="ov">Overnight · Chiang Mai</span></div><span class="km">140 km<small>4 to 5 hr</small></span><p><span class="n">2</span>Pick up the bikes, golden chedi, Samoeng warm-up loop</p></div>
+    <div class="r"><span class="d">3</span><div><h3>Chiang Mai to Pai</h3><span class="ov">Overnight · Pai</span></div><span class="km">135 km<small>3.5 to 4 hr</small></span><p><span class="n">3</span>The curves of Route 1095, Huai Nam Dang <span class="n">4</span>Pai Canyon at sunset</p></div>
+    <div class="r"><span class="d">4</span><div><h3>Pai to Mae Hong Son</h3><span class="ov">Overnight · Mae Hong Son</span></div><span class="km">185 km<small>5.5 hr</small></span><p><span class="n">5</span>Tham Lod Cave by bamboo raft <span class="n">6</span>Ban Rak Thai tea village, Pang Ung <span class="n">7</span>Doi Kong Mu at sunset</p></div>
+    <div class="r"><span class="d">5</span><div><h3>Mae Hong Son to Khun Yuam</h3><span class="ov">Overnight · Khun Yuam</span></div><span class="km">145 km<small>4 hr</small></span><p>Su Tong Pae bamboo bridge, WWII museum <span class="n">8</span>Sunflower hills of Doi Mae U-Kho in late light</p></div>
+    <div class="r"><span class="d">6</span><div><h3>Khun Yuam to Doi Inthanon</h3><span class="ov">Overnight · Mae Klang Luang</span></div><span class="km">260 km<small>6.5 to 7 hr</small></span><p>Route 108 through Mae Sariang <span class="n">9</span>Ob Luang gorge <span class="n">10</span>Karen rice terraces</p></div>
+    <div class="r"><span class="d">7</span><div><h3>Summit and back to Chiang Mai</h3><span class="ov">Overnight · Chiang Mai</span></div><span class="km">130 km<small>3 hr</small></span><p><span class="n">11</span>Sunrise on Thailand's highest peak, royal chedis, waterfalls</p></div>
+    <div class="r"><span class="d">8</span><div><h3>Depart</h3><span class="ov">Fly out of Chiang Mai</span></div><span class="km">Departure</span><p>Warorot Market, last khao soi</p></div>
+  </div>
+</div></section>
+
+<section><div class="col">
+  <div class="sh"><span class="kicker">Route highlights</span><h2>Eleven stops</h2></div>
+  <div class="stops">
+    <article class="stop"><figure><img src="{{photo:chiangmai}}" alt="Wat Chedi Luang, Chiang Mai"><span class="num">1</span></figure><div class="tx"><span class="where">Start and finish</span><h3>Chiang Mai</h3><p>The old Lanna capital: a moated city of temples, markets, and northern food.</p></div></article>
+    <article class="stop"><figure><img src="{{photo:doisuthep}}" alt="The golden chedi of Wat Phra That Doi Suthep"><span class="num">2</span></figure><div class="tx"><span class="where">Day 2</span><h3>Doi Suthep</h3><p>The gilded chedi of Wat Phra That Doi Suthep, high above the city.</p></div></article>
+    <article class="stop"><figure><img src="{{photo:huainamdang}}" alt="A sea of mist below the Huai Nam Dang viewpoint"><span class="num">3</span></figure><div class="tx"><span class="where">Day 3</span><h3>Huai Nam Dang</h3><p>Cool pine forest and a sea of mist filling the valleys at dawn.</p></div></article>
+    <article class="stop"><figure><img src="{{photo:pai}}" alt="Sunset at Pai Canyon"><span class="num">4</span></figure><div class="tx"><span class="where">Day 3</span><h3>Pai</h3><p>A laid-back valley town with hot springs, cafés, and the narrow ridges of Pai Canyon.</p></div></article>
+    <article class="stop"><figure><img src="{{photo:thamlod}}" alt="Inside Tham Lod Cave"><span class="num">5</span></figure><div class="tx"><span class="where">Day 4</span><h3>Tham Lod Cave</h3><p>A river cave with ancient teak coffins, explored by lantern and bamboo raft.</p></div></article>
+    <article class="stop"><figure><img src="{{photo:banrakthai}}" alt="Ban Rak Thai village around its lake"><span class="num">6</span></figure><div class="tx"><span class="where">Day 4</span><h3>Ban Rak Thai and Pang Ung</h3><p>A Yunnanese tea village on the border, and a pine-ringed reservoir in morning mist.</p></div></article>
+    <article class="stop"><figure><img src="{{photo:maehongson}}" alt="Wat Jong Kham on the lake in Mae Hong Son"><span class="num">7</span></figure><div class="tx"><span class="where">Days 4 and 5</span><h3>Mae Hong Son</h3><p>A Shan mountain town of lakeside temples and the white chedis of Doi Kong Mu.</p></div></article>
+    <article class="stop"><figure><img src="{{photo:khunyuam}}" alt="Mexican sunflower fields on Doi Mae U-Kho"><span class="num">8</span></figure><div class="tx"><span class="where">Day 5</span><h3>Khun Yuam and Doi Mae U-Kho</h3><p>Wartime history in town, and hillsides of wild sunflowers from late November.</p></div></article>
+    <article class="stop"><figure><img src="{{photo:obluang}}" alt="The bridge over the Ob Luang gorge"><span class="num">9</span></figure><div class="tx"><span class="where">Day 6</span><h3>Ob Luang</h3><p>A narrow granite gorge, crossed by a footbridge above the rapids.</p></div></article>
+    <article class="stop"><figure><img src="{{photo:terraces}}" alt="Rice terraces at Mae Klang Luang"><span class="num">10</span></figure><div class="tx"><span class="where">Day 6</span><h3>Mae Klang Luang</h3><p>A Karen village of rice terraces and mountain coffee on the slopes of Doi Inthanon.</p></div></article>
+    <article class="stop wide"><figure style="height:100%"><img src="{{photo:inthanon}}" alt="The royal chedis on Doi Inthanon"><span class="num">11</span></figure><div class="tx"><span class="where">Days 6 and 7</span><h3>Doi Inthanon</h3><p>Thailand's highest mountain, at 2,565 m (8,415 ft): cloud forest, waterfalls, and the twin royal chedis looking out over the ranges we rode.</p></div></article>
+  </div>
+</div></section>
+
+<footer class="closing"><div class="col">
+  <h2>The Mae Hong Son Loop and beyond</h2>
+  <p>Eight days, one big loop, and some of the best riding roads in Asia. Starts and finishes in Chiang Mai, November to February.</p>
+  <p class="cta"><a href="plan.html">See the day-by-day plan</a><a href="links.html">Maps and links</a></p>
+</div></footer>
+<div class="col credits">{{credits}}</div>

@@ -1,0 +1,232 @@
+<meta charset="utf-8">
+<title>Plan and budget · Ride Northern Thailand</title>
+<style>
+/* Layout: one reading column like the Bangkok day pages; facts, the real relief map, day cards (route, timing, fuel, beds), the budget calculator, then the before-you-go list. */
+:root{
+  --bg:#ffffff; --fg:#1F1F1F; --muted:#4A4A4A; --head:#002E5D;
+  --road:#c8102e; --fuel:#1d6fb8; --bed:#5b6b2f; --card:#f3f5f8; --line:#dde2ea; --chip:#e7edf5; --warn:#a15c00; --warnbg:#fff4e0;
+  --display:Georgia,"Times New Roman",serif; --body:Arial,Helvetica,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10151c; --fg:#e8eaee; --muted:#aab2bd; --head:#9cc3f0;
+  --road:#ff6b7f; --fuel:#6fb2f0; --bed:#b5c97a; --card:#19212b; --line:#2a3340; --chip:#22303f; --warn:#f0b450; --warnbg:#2b2214; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10151c; --fg:#e8eaee; --muted:#aab2bd; --head:#9cc3f0;
+  --road:#ff6b7f; --fuel:#6fb2f0; --bed:#b5c97a; --card:#19212b; --line:#2a3340; --chip:#22303f; --warn:#f0b450; --warnbg:#2b2214; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:720px;margin:0 auto;padding-block:24px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-family:var(--display);color:var(--head);font-size:2rem;line-height:1.15;margin:0;text-wrap:balance}
+h2{font-family:var(--display);color:var(--head);font-size:1.3rem;margin:36px 0 10px;text-wrap:balance}
+h3{font-family:var(--display);color:var(--head);font-size:1.05rem;margin:0}
+.eyebrow{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.sub{color:var(--muted);margin:8px 0 0;max-width:62ch}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0 0}
+.stat{background:var(--card);border-radius:10px;padding:10px 12px}
+.stat b{display:block;font-family:var(--display);font-size:1.35rem;color:var(--head);font-variant-numeric:tabular-nums}
+.stat span{font-size:.8rem;color:var(--muted)}
+@media (max-width:520px){.stats{grid-template-columns:repeat(2,1fr)}}
+.map{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#e9e8e3;margin-top:20px}
+.map svg{display:block;width:100%;height:auto}
+@media (max-width:600px){.map{overflow-x:auto}.map svg{width:680px;max-width:none}}
+.note{font-size:.85rem;color:var(--muted)}
+.fix{background:var(--warnbg);border-radius:10px;padding:10px 14px;font-size:.9rem;margin-top:14px}
+.fix b{color:var(--warn)}
+ol.days{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.day{background:var(--card);border-radius:12px;padding:14px 16px;display:grid;gap:8px}
+.dhead{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.dn{font-family:var(--display);font-weight:700;color:var(--road);font-size:.95rem;min-width:3.2em}
+.km{margin-left:auto;font-size:.82rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.day p{margin:0}
+.row{display:grid;grid-template-columns:52px 1fr;gap:10px;font-size:.9rem}
+.tag{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700;padding-top:2px}
+.tag.fuel{color:var(--fuel)} .tag.bed{color:var(--bed)} .tag.road{color:var(--muted)}
+.row div{min-width:0}
+.tier{display:inline-block;font-size:.7rem;padding:1px 7px;border-radius:99px;background:var(--chip);color:var(--muted);margin-right:4px;vertical-align:1px}
+.calc{background:var(--card);border-radius:12px;padding:16px;display:grid;gap:14px}
+.inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 14px}
+label{display:grid;gap:4px;font-size:.82rem;color:var(--muted)}
+input,select{font:inherit;font-size:.95rem;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 9px;min-width:0}
+input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--head);outline-offset:2px}
+.check{display:flex;gap:8px;align-items:center;font-size:.9rem;color:var(--fg)}
+.check input{width:18px;height:18px}
+.total{display:flex;flex-wrap:wrap;gap:6px 24px;align-items:baseline;border-top:1px solid var(--line);padding-top:12px}
+.total .big{font-family:var(--display);font-size:2rem;color:var(--head);font-variant-numeric:tabular-nums}
+.total .sm{color:var(--muted);font-size:.9rem;font-variant-numeric:tabular-nums}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.88rem}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.nights select{padding:4px 6px;font-size:.85rem}
+ul.list{margin:0;padding-left:20px;display:grid;gap:6px}
+.foot{margin-top:36px;font-size:.8rem;color:var(--muted)}
+</style>
+{{nav}}
+
+<div class="wrap">
+<p class="eyebrow">Northern Thailand · group ride · dry season · planning</p>
+<h1>The Mae Hong Son Loop</h1>
+<p class="sub">Eight days on the ground in Chiang Mai, six of them on mid-size adventure bikes, at a pace for a group that keeps moving. Every stop from the <a href="index.html">tour page</a>, with the rest days taken out.</p>
+
+<div class="stats">
+  <div class="stat"><b>~1,000 km</b><span>about 620 mi, with side trips</span></div>
+  <div class="stat"><b>6</b><span>days on the bikes</span></div>
+  <div class="stat"><b>260 km</b><span>longest day (Day 6)</span></div>
+  <div class="stat"><b>7</b><span>nights, 5 towns</span></div>
+</div>
+
+<div class="map" role="img" aria-label="Relief map of the loop with numbered stops">
+{{map}}
+</div>
+<p class="note">Relief by Esri and USGS; roads and border from OpenStreetMap. On a phone, swipe the map sideways.</p>
+
+<div class="fix"><b>Daylight rule:</b> sunset is about 5:45 to 6:00 pm from November to February. Be off the mountain roads by then (fog, dogs, and unlit trucks). Days 4 and 6 only work with a 7:00 to 7:30 start.</div>
+
+<h2>Day by day</h2>
+<p class="note" style="margin:0 0 12px">Times are targets for a group that rides steadily and keeps stops short. Distances come from OpenStreetMap routing. Each night shows a comfortable pick and a budget pick (rough prices per room from booking sites).</p>
+<ol class="days">
+  <li class="day">
+    <div class="dhead"><span class="dn">Day 1</span><h3>Land in Chiang Mai</h3><span class="km">no riding</span></div>
+    <p>Fly Bangkok to Chiang Mai (CNX), about 1 hr 10 min; the Old City is 15 min by Grab. Wat Chedi Luang and Wat Phra Singh, then Tha Phae Gate and the Night Bazaar. Stop at the rental shop to sign papers and fit helmets.</p>
+    <div class="row"><span class="tag bed">Beds</span><div><span class="tier">Comfortable</span>Thapae Boutique House, by Tha Phae Gate, ~1,500 to 2,500 ฿; has triple rooms. <span class="tier">Budget</span>Pha Thai House, ~$20 to $35, twin rooms.</div></div>
+  </li>
+  <li class="day">
+    <div class="dhead"><span class="dn">Day 2</span><h3>Doi Suthep and the Samoeng loop</h3><span class="km">~140 km · 4 to 5 hr</span></div>
+    <p><b>8:00</b> bikes. <b>8:30</b> Wat Phra That Doi Suthep before the crowds. <b>10:30</b> Samoeng loop through Mon Cham, lunch in Samoeng, back through Hang Dong by mid-afternoon. Sort out luggage, intercoms and riding order today.</p>
+    <div class="row"><span class="tag road">Roads</span><div>Rte 1004 to Doi Suthep; 1096 out through Mae Rim; 1269 back through Hang Dong.</div></div>
+    <div class="row"><span class="tag fuel">Fuel</span><div>Collect bikes full. Stations at Mae Rim, Samoeng and Hang Dong. <b>Fill up tonight</b> for tomorrow.</div></div>
+    <div class="row"><span class="tag bed">Beds</span><div>Same Chiang Mai hotel.</div></div>
+  </li>
+  <li class="day">
+    <div class="dhead"><span class="dn">Day 3</span><h3>Chiang Mai to Pai</h3><span class="km">~135 km · 3.5 to 4 hr</span></div>
+    <p><b>8:30</b> leave. The 762 curves of Route 1095. <b>11:00</b> coffee and the viewpoint at Huai Nam Dang (about 6 km off the highway). <b>2:00</b> into Pai: hot springs or the Land Split. <b>5:00</b> sunset at Pai Canyon, then the Walking Street.</p>
+    <div class="row"><span class="tag road">Roads</span><div>Rte 107 north to Mae Malai, then left onto 1095.</div></div>
+    <div class="row"><span class="tag fuel">Fuel</span><div>Top up at <b>Mae Malai</b> (km 36); stations are sparse after the turn. <b>Fill in Pai</b> tonight.</div></div>
+    <div class="row"><span class="tag bed">Beds</span><div><span class="tier">Budget</span>Breeze of Pai Guesthouse, 1 min from Walking Street, ~800 ฿, easy parking. <span class="tier">Comfortable</span>Pai Village Boutique Resort, from ~1,750 ฿ (parking limited).</div></div>
+  </li>
+  <li class="day">
+    <div class="dhead"><span class="dn">Day 4</span><h3>Pai to Mae Hong Son, by Tham Lod and Ban Rak Thai</h3><span class="km">~185 km · 5.5 hr</span></div>
+    <p><b>7:30</b> leave, over the Kiew Lom viewpoint. <b>9:00</b> Tham Lod Cave: lantern guide and bamboo raft (about 2 hr). <b>11:30</b> lunch in Soppong. <b>2:00</b> Ban Rak Thai for Yunnanese tea on the lake. <b>3:30</b> Pang Ung reservoir. <b>4:45</b> into Mae Hong Son; sunset at Wat Phra That Doi Kong Mu, dinner at the Jong Kham Lake night market.</p>
+    <div class="row"><span class="tag road">Roads</span><div>1095 west to Soppong and the cave spur; west to Na Pa Paek, north to Ban Rak Thai, down past Pang Ung to Mae Hong Son. The steepest, twistiest riding of the trip.</div></div>
+    <div class="row"><span class="tag fuel">Fuel</span><div>Leave Pai full; <b>top up in Soppong</b> (small station). Then <b>no confirmed station for ~125 km</b> until Mae Hong Son, only village bottle fuel. A CB500X has about 380 km of range, so this is fine starting full.</div></div>
+    <div class="row"><span class="tag bed">Beds</span><div><span class="tier">Comfortable</span>Imperial Mae Hong Son Resort, ~1,550 ฿, large grounds. <span class="tier">Budget</span>Piya Guesthouse, 200 m from Jong Kham Lake, pool, ~930 ฿.</div></div>
+  </li>
+  <li class="day">
+    <div class="dhead"><span class="dn">Day 5</span><h3>Mae Hong Son to Khun Yuam and Doi Mae U-Kho</h3><span class="km">~145 km · 4 hr</span></div>
+    <p><b>7:30</b> Su Tong Pae bamboo bridge across the rice fields (12 km north). <b>9:30</b> south on Route 108. <b>11:00</b> Khun Yuam: the Thai-Japan Friendship Memorial Hall (WWII), lunch. <b>2:30</b> up to Doi Mae U-Kho for the sunflower hills (mid-November to early December) in the late light. <b>5:15</b> start back down the 27 km to town before dark.</p>
+    <div class="row"><span class="tag fuel">Fuel</span><div>Fill in <b>Mae Hong Son</b>. Station in <b>Khun Yuam</b>; <b>fill tonight</b>, because tomorrow starts on the emptiest part of the loop.</div></div>
+    <div class="row"><span class="tag bed">Beds</span><div><span class="tier">Budget</span>Yoont Hotel, rooftop view, owner gives road advice, from ~700 ฿. <span class="tier">Comfortable</span>Khunyuam Resort, mountain views, ~$30 to $50. Book ahead in sunflower season.</div></div>
+  </li>
+  <li class="day">
+    <div class="dhead"><span class="dn">Day 6</span><h3>Khun Yuam to Doi Inthanon, by Mae Sariang and Ob Luang</h3><span class="km">~260 km · 6.5 to 7 hr</span></div>
+    <p>The long day. <b>7:00</b> leave. <b>9:30</b> Mae Sariang: fuel and coffee by the Yuam River. <b>12:00</b> Ob Luang gorge and its suspension bridge; lunch nearby. <b>1:30</b> through Hot and Chom Thong. <b>3:00</b> up Route 1009 into Doi Inthanon National Park, to Mae Klang Luang for the rice terraces in the late light.</p>
+    <div class="row"><span class="tag fuel">Fuel</span><div>Leave Khun Yuam full. Fill in <b>Mae Sariang</b> (stations there capped sales during the March 2026 shortage, so don't arrive on reserve), again at <b>Hot</b>, and <b>top off at Chom Thong</b> before the climb (no stations in the park).</div></div>
+    <div class="row"><span class="tag bed">Beds</span><div><span class="tier">Budget</span>Ban Kham Kee Homestay, Mae Klang Luang, breakfast and a firepit, ~600 to 1,200 ฿. <span class="tier">Comfortable</span>Mea Klang Luang Villa, opened 2024, breakfast, ~2,400 ฿. It drops near freezing at night in Dec and Jan.</div></div>
+  </li>
+  <li class="day">
+    <div class="dhead"><span class="dn">Day 7</span><h3>Summit and back to Chiang Mai</h3><span class="km">~130 km · 3 hr</span></div>
+    <p><b>5:45</b> ride up for sunrise at the 2,565 m summit and the Kew Mae Pan ridge trail (guide required; open about November to May). <b>9:00</b> the twin royal chedis. <b>10:30</b> Wachirathan Falls on the way down. <b>1:30</b> bikes back in Chiang Mai. Afternoon: Warorot Market, a massage, and khao soi.</p>
+    <div class="row"><span class="tag fuel">Fuel</span><div>Most shops want the bikes back full. Fill up at the last station before the shop.</div></div>
+    <div class="row"><span class="tag bed">Beds</span><div>Back to the Chiang Mai hotel. Or fly out this evening if the flight times work, and save a night.</div></div>
+  </li>
+  <li class="day">
+    <div class="dhead"><span class="dn">Day 8</span><h3>Fly out</h3><span class="km">no riding</span></div>
+    <p>Fly Chiang Mai to Bangkok and connect home.</p>
+  </li>
+</ol>
+
+<h2>Budget once we land</h2>
+<p class="note" style="margin:0 0 12px">Per person, from landing in Bangkok to leaving Chiang Mai. International flights aren't included. Prices are Nov 2026 figures from booking sites, rental-shop listings and fuel price reports; change any number to match real quotes.</p>
+<div class="calc">
+  <div class="inputs">
+    <label for="riders">People in the group<input id="riders" type="number" min="1" max="20" value="4"></label>
+    <label for="bikes">Motorcycles<input id="bikes" type="number" min="1" max="20" value="4"></label>
+    <label for="rooms">Rooms per night<input id="rooms" type="number" min="1" max="20" value="2"></label>
+    <label for="rate">Bike rate, ฿/day<input id="rate" type="number" min="0" step="50" value="1500"></label>
+    <label for="food">Food style<select id="food"><option value="450">Local and street food (~450 ฿/day)</option><option value="800" selected>Mixed (~800 ฿/day)</option><option value="1300">Nicer dinners (~1,300 ฿/day)</option></select></label>
+    <label for="fx">Baht per US dollar<input id="fx" type="number" min="1" step="0.1" value="33.7"></label>
+  </div>
+  <div style="display:grid;gap:6px">
+    <label class="check" for="flights"><input id="flights" type="checkbox" checked>Include Bangkok to Chiang Mai and back (~2,000 ฿ each way with a bag)</label>
+    <label class="check" for="weekly"><input id="weekly" type="checkbox">Long-rental discount (shops typically take 15% off for 7+ days; this plan is 6)</label>
+    <label class="check" for="panniers"><input id="panniers" type="checkbox" checked>Panniers or a top box (~100 ฿ per bike per day)</label>
+  </div>
+
+  <details>
+    <summary style="cursor:pointer;font-size:.9rem;color:var(--head)">Choose comfortable or budget for each night</summary>
+    <div class="tbl nights" style="margin-top:8px"><table id="nights"><thead><tr><th>Night</th><th>Town</th><th>Stay</th><th class="n">฿ per room</th></tr></thead><tbody></tbody></table></div>
+  </details>
+
+  <div class="tbl"><table id="lines"><thead><tr><th>Item</th><th>How it's figured</th><th class="n">฿ / person</th><th class="n">$ / person</th></tr></thead><tbody></tbody></table></div>
+  <div class="total"><span class="big" id="tUsd">$0</span><span class="sm" id="tThb"></span><span class="sm" id="tGroup"></span></div>
+  <p class="note" style="margin:0">Not included: the bike damage deposit, which is usually 10,000 to 20,000 ฿ in cash or held on a card and returned with the bike, plus travel insurance and gear you bring from home.</p>
+</div>
+
+<h2>Before we go</h2>
+<ul class="list">
+  <li><b>Licenses.</b> Each rider needs a motorcycle endorsement on their US license <b>and</b> an International Driving Permit that lists motorcycles (AAA issues them). Without both, police fines run 400 to 2,000 ฿, and travel and rental insurance usually won't pay out after a crash.</li>
+  <li><b>Rental shops.</b> Get quotes from three shops: Mr Mechanic (Moon Muang Rd; 1,200 to 2,000 ฿/day; cash deposit and a passport copy, not the original), POP Bigbike (53 Kotchasarn Rd; panniers and top cases), and C&amp;P Big Bike (next to POP, from 1,200 ฿/day). Ask about the crash excess (often 10,000 to 30,000 ฿) and whether third-party cover is included. Tony's Big Bikes may have closed.</li>
+  <li><b>Helmets.</b> Required for riders and passengers; the fine went up to 2,000 ฿ in 2025. Bring your own or pay ~100 ฿/day for a better rental helmet.</li>
+  <li><b>When to go.</b> November to February is cool and dry. Late November to early December catches the sunflowers, but avoid Yi Peng (around Nov 24 and 25, when Chiang Mai prices double or triple) and New Year week (Pai and Inthanon sell out). Mid-January to February is quieter and cheaper.</li>
+  <li><b>Fuel habit.</b> Fill up in every town, even at half a tank. Stations along the loop ran dry in March 2026.</li>
+  <li><b>Spare time.</b> The fast pace leaves little cushion. Carry a tire plug kit and a compressor, and agree ahead of time which stop gets dropped if a day runs late (Su Tong Pae on Day 5 and the Mae Sariang coffee stop on Day 6 are the easiest).</li>
+  <li><b>Gear.</b> Warm layers for 5:45 am starts (near freezing on Inthanon in Dec and Jan), rain shell, disc locks (no hotel on the list promises secure parking, so ask for a gated or covered spot), intercoms, and an offline map.</li>
+  <li><b>Park fees.</b> Foreigners pay 300 ฿ each at Doi Inthanon and Huai Nam Dang, 100 to 200 ฿ at Ob Luang, and 20 ฿ per motorcycle. Bring cash.</li>
+</ul>
+
+<p class="foot">Updated Nov 20, 2026 for the 8-day plan. Distances, fees and prices are planning figures from 2025 and 2026 sources; confirm bookings and rates before paying.</p>
+</div>
+
+<script>
+(function(){
+  var NIGHTS=[
+    {n:1,town:"Chiang Mai",c:["Thapae Boutique House",2000],b:["Pha Thai House",950],pick:"c"},
+    {n:2,town:"Chiang Mai",c:["Thapae Boutique House",2000],b:["Pha Thai House",950],pick:"c"},
+    {n:3,town:"Pai",c:["Pai Village Boutique Resort",1750],b:["Breeze of Pai Guesthouse",800],pick:"b"},
+    {n:4,town:"Mae Hong Son",c:["Imperial Mae Hong Son Resort",1550],b:["Piya Guesthouse",930],pick:"c"},
+    {n:5,town:"Khun Yuam",c:["Khunyuam Resort",1400],b:["Yoont Hotel",700],pick:"b"},
+    {n:6,town:"Mae Klang Luang",c:["Mea Klang Luang Villa",2400],b:["Ban Kham Kee Homestay",900],pick:"b"},
+    {n:7,town:"Chiang Mai",c:["Thapae Boutique House",2000],b:["Pha Thai House",950],pick:"c"}
+  ];
+  var RENT_DAYS=6, TOTAL_KM=1000, L_PER_100=4.5, FUEL_PRICE=39, DAYS=8;
+  var $=function(id){return document.getElementById(id)};
+  var tb=document.querySelector("#nights tbody");
+  NIGHTS.forEach(function(x,i){
+    var tr=document.createElement("tr");
+    tr.innerHTML='<td>'+x.n+'</td><td>'+x.town+'</td><td><select id="night'+i+'" aria-label="Night '+x.n+' stay">'+
+      '<option value="c">'+x.c[0]+' (comfortable)</option><option value="b">'+x.b[0]+' (budget)</option></select></td><td class="n" id="np'+i+'"></td>';
+    tb.appendChild(tr);
+    tr.querySelector("select").value=x.pick;
+  });
+  function num(id,d){var v=parseFloat($(id).value);return isFinite(v)&&v>0?v:d}
+  function f(n){return Math.round(n).toLocaleString("en-US")}
+  function calc(){
+    var P=num("riders",1),B=num("bikes",1),R=num("rooms",1),rate=num("rate",0),food=+$("food").value,fx=num("fx",33.7);
+    var lodgingRoom=0;
+    NIGHTS.forEach(function(x,i){var p=$("night"+i).value==="c"?x.c[1]:x.b[1];lodgingRoom+=p;$("np"+i).textContent=f(p)});
+    var rentDay=rate*($("weekly").checked?0.85:1)+($("panniers").checked?100:0);
+    var fuelBike=TOTAL_KM*L_PER_100/100*FUEL_PRICE;
+    var lines=[
+      ["Bike rental",RENT_DAYS+" days × "+f(rentDay)+" ฿ × "+B+" bikes ÷ "+P+" people",rentDay*RENT_DAYS*B/P],
+      ["Fuel","~"+f(TOTAL_KM)+" km at "+L_PER_100+" L/100 km, "+FUEL_PRICE+" ฿/L, per bike shared",fuelBike*B/P],
+      ["Lodging",NIGHTS.length+" nights, "+f(lodgingRoom)+" ฿ per room × "+R+" rooms ÷ "+P,lodgingRoom*R/P],
+      ["Food",DAYS+" days × "+f(food)+" ฿",food*DAYS],
+      ["Park and site fees","Inthanon, Huai Nam Dang, Ob Luang, Tham Lod guide and raft, temples, museum",1400],
+      ["Grab, airport and SIM","Airport rides, town Grabs, a Thai SIM with data",900]
+    ];
+    if($("flights").checked) lines.unshift(["Flights, Bangkok ⇄ Chiang Mai","Budget airline, one checked bag, both ways",4000]);
+    var sub=lines.reduce(function(a,l){return a+l[2]},0);
+    lines.push(["Contingency","10% for repairs, a tire, price surprises",sub*0.1]);
+    var tot=sub*1.1;
+    var body=document.querySelector("#lines tbody");body.innerHTML="";
+    lines.forEach(function(l){var tr=document.createElement("tr");
+      tr.innerHTML="<td>"+l[0]+"</td><td>"+l[1]+'</td><td class="n">'+f(l[2])+'</td><td class="n">$'+f(l[2]/fx)+"</td>";body.appendChild(tr)});
+    $("tUsd").textContent="$"+f(tot/fx)+" per person";
+    $("tThb").textContent=f(tot)+" ฿ per person";
+    $("tGroup").textContent="Group of "+P+": $"+f(tot*P/fx);
+  }
+  document.querySelectorAll(".calc input,.calc select").forEach(function(el){el.addEventListener("input",calc);el.addEventListener("change",calc)});
+  $("riders").addEventListener("input",function(){var p=num("riders",1);$("bikes").value=p;$("rooms").value=Math.ceil(p/2);calc()});
+  calc();
+})();
+</script>
