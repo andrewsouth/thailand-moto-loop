@@ -30,6 +30,7 @@ NAV_CSS = """
 .sitenav a.pg:hover{color:#f2f1ec}
 .sitenav a.pg[aria-current]{color:#f2f1ec;border-bottom-color:#d6b06a}
 body{margin:0}
+@media print{.sitenav{display:none}}
 """
 
 LABEL = {"cover1": "Doi Mae U-Kho (cover)", "cover2": "Pang Ung (banner)", "chiangmai": "Wat Chedi Luang",
